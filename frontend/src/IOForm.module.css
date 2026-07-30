@@ -1,0 +1,42 @@
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    min-height: 100vh;
+    padding: 2rem;
+    flex-wrap: wrap;
+}
+
+.wrapper textarea {
+    flex: 1;
+    min-width: 280px;
+    max-width: 500px;
+    height: 300px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+}
+
+.button {
+    padding: 0.6rem 1.2rem;
+    background: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.button:disabled {
+    background: #999;
+    cursor: not-allowed;
+}
+
+.error {
+    width: 100%;
+    text-align: center;
+    color: red;
+}

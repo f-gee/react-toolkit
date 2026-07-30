@@ -6,7 +6,13 @@
   "author": "",
   "type": "commonjs",
   "main": "index.js",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev:backend\" \"npm run dev:frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.4"
   }
 }
