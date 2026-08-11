@@ -2,9 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const hjson = require('hjson');
+const { minify: minifyJs } = require('terser');
+const beautifyJs = require('js-beautify').js;
 require('dotenv').config();
-
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const corsOptions = {
     origin: process.env.NODE_ENV === 'production'
@@ -18,46 +18,86 @@ app.get('/', (req, res) => {
     res.send({ message: 'home' });
 });
 
-app.post('/hjson/minify', (req, res) => {
+function requireInput(req, res) {
     const input = req.body.input;
     if (!input) {
-        return res.status(400).send({ error: 'Missing "input" field' });
+        res.status(400).send({ error: 'Missing "input" field' });
+        return null;
     }
+    return input;
+}
+
+// JSON minify/beautify use the hjson parser so the input can be plain JSON
+// *or* HJSON (comments, unquoted keys, trailing commas, etc). Output is
+// always standard JSON.
+app.post('/json/minify', (req, res) => {
+    const input = requireInput(req, res);
+    if (input === null) return;
     try {
         const parsed = hjson.parse(input);
-        const minified = JSON.stringify(parsed);
-        res.json({ result: minified });
+        res.json({ result: JSON.stringify(parsed) });
     } catch (err) {
-        res.status(400).json({ error: 'Invalid HJSON: ' + err.message });
+        res.status(400).json({ error: 'Invalid JSON/HJSON: ' + err.message });
     }
 });
 
-app.post('/hjson/beautify', (req, res) => {
-    const input = req.body.input;
-    if (!input) {
-        return res.status(400).send({ error: 'Missing "input" field' });
-    }
+app.post('/json/beautify', (req, res) => {
+    const input = requireInput(req, res);
+    if (input === null) return;
     try {
         const parsed = hjson.parse(input);
-        const beautified = hjson.stringify(parsed, { space: 2 });
-        res.json({ result: beautified });
+        res.json({ result: JSON.stringify(parsed, null, 2) });
     } catch (err) {
-        res.status(400).json({ error: 'Invalid HJSON: ' + err.message });
+        res.status(400).json({ error: 'Invalid JSON/HJSON: ' + err.message });
     }
 });
 
-app.post('/hjson/beautifyWithDelay', async (req, res) => {
-    const input = req.body.input;
-    if (!input) {
-        return res.status(400).send({ error: 'Missing "input" field' });
-    }
+app.post('/js/minify', async (req, res) => {
+    const input = requireInput(req, res);
+    if (input === null) return;
     try {
-        await delay(3000);
-        const parsed = hjson.parse(input);
-        const beautified = hjson.stringify(parsed, { space: 2 });
-        res.json({ result: beautified });
+        const result = await minifyJs(input);
+        if (!result.code) {
+            throw new Error('Minification produced no output');
+        }
+        res.json({ result: result.code });
     } catch (err) {
-        res.status(400).json({ error: 'Invalid HJSON: ' + err.message });
+        res.status(400).json({ error: 'Invalid JS: ' + err.message });
+    }
+});
+
+app.post('/js/beautify', (req, res) => {
+    const input = requireInput(req, res);
+    if (input === null) return;
+    try {
+        const result = beautifyJs(input, { indent_size: 2 });
+        res.json({ result });
+    } catch (err) {
+        res.status(400).json({ error: 'Invalid JS: ' + err.message });
+    }
+});
+
+app.post('/base64/encode', (req, res) => {
+    const input = requireInput(req, res);
+    if (input === null) return;
+    try {
+        res.json({ result: Buffer.from(input, 'utf-8').toString('base64') });
+    } catch (err) {
+        res.status(400).json({ error: 'Could not encode input: ' + err.message });
+    }
+});
+
+app.post('/base64/decode', (req, res) => {
+    const input = requireInput(req, res);
+    if (input === null) return;
+    try {
+        const isValidBase64 = /^[A-Za-z0-9+/]*={0,2}$/.test(input.replace(/\s/g, ''));
+        if (!isValidBase64) {
+            throw new Error('Input is not valid base64');
+        }
+        res.json({ result: Buffer.from(input, 'base64').toString('utf-8') });
+    } catch (err) {
+        res.status(400).json({ error: 'Invalid base64: ' + err.message });
     }
 });
 

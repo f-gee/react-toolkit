@@ -4,14 +4,52 @@ import GenericTool from './GenericTool.jsx'
 import { tools } from './toolsConfig.js'
 import styles from './App.module.css'
 
+const GROUP_ICONS = {
+  json: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 3.5c-1.5 0-2.5 1-2.5 2.5v3c0 1-.5 1.5-1.5 2 1 .5 1.5 1 1.5 2v3c0 1.5 1 2.5 2.5 2.5" />
+      <path d="M16 3.5c1.5 0 2.5 1 2.5 2.5v3c0 1 .5 1.5 1.5 2-1 .5-1.5 1-1.5 2v3c0 1.5-1 2.5-2.5 2.5" />
+    </svg>
+  ),
+  js: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 8 5 12l4 4" />
+      <path d="M15 8l4 4-4 4" />
+      <path d="M13 6l-2 12" />
+    </svg>
+  ),
+  base64: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3.5" y="6" width="17" height="12" rx="2" />
+      <path d="M7 10.5v3M10 10.5v3M13 10.5l1.5 1.5-1.5 1.5M20 10.5v3" />
+    </svg>
+  ),
+}
+
+const GROUP_LABELS = {
+  json: 'JSON',
+  js: 'JavaScript',
+  base64: 'Base64',
+}
+
 function HomePage() {
   return (
     <div className={styles.homeWrapper}>
-      <h1>Toolkit</h1>
+      <h1 className={styles.homeTitle}>Toolkit</h1>
+      <p className={styles.homeSubtitle}>Quick formatting &amp; conversion tools</p>
       <ul className={styles.toolList}>
         {tools.map((tool) => (
           <li key={tool.path}>
-            <Link to={tool.path}>{tool.label}</Link>
+            <Link to={tool.path} className={styles.toolCard}>
+              <span className={`${styles.toolIcon} ${styles[`icon_${tool.group}`] || ''}`}>
+                {GROUP_ICONS[tool.group]}
+              </span>
+              <span className={styles.toolText}>
+                <span className={styles.toolLabel}>{tool.label}</span>
+                <span className={styles.toolGroup}>{GROUP_LABELS[tool.group]}</span>
+              </span>
+              <span className={styles.toolArrow} aria-hidden="true">→</span>
+            </Link>
           </li>
         ))}
       </ul>
@@ -29,7 +67,7 @@ function App() {
           <Route
             key={tool.path}
             path={tool.path}
-            element={<GenericTool endpoint={tool.path} label={tool.label} />}
+            element={<GenericTool endpoint={tool.path} label={tool.label} note={tool.note} />}
           />
         ))}
       </Routes>

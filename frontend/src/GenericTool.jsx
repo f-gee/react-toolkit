@@ -1,7 +1,7 @@
 import useApiTransform from './useApiTransform.js'
 import IOForm from './IOForm.jsx'
 
-function GenericTool({ endpoint, label }) {
+function GenericTool({ endpoint, label, note }) {
     const { input, setInput, output, error, loading, submit } = useApiTransform(endpoint)
 
     return (
@@ -13,6 +13,7 @@ function GenericTool({ endpoint, label }) {
             loading={loading}
             error={error}
             buttonLabel={label}
+            note={note}
         />
     )
 }
