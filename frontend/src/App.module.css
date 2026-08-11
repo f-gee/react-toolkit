@@ -81,9 +81,19 @@
     color: #b45309;
 }
 
+.icon_css {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
 .icon_base64 {
     background: #dcfce7;
     color: #15803d;
+}
+
+.icon_diff {
+    background: #fce7f3;
+    color: #be185d;
 }
 
 .toolText {
@@ -135,8 +145,18 @@
         color: #f2b93b;
     }
 
+    .icon_css {
+        background: #1e2f52;
+        color: #60a5fa;
+    }
+
     .icon_base64 {
         background: #123321;
         color: #4ade80;
+    }
+
+    .icon_diff {
+        background: #3a1530;
+        color: #f472b6;
     }
 }

@@ -9,6 +9,9 @@ export const tools = [
     { path: '/json/minify', label: 'JSON Minify', group: 'json', note: hjsonNote },
     { path: '/js/beautify', label: 'JS Beautify', group: 'js' },
     { path: '/js/minify', label: 'JS Minify', group: 'js' },
+    { path: '/css/beautify', label: 'CSS Beautify', group: 'css' },
+    { path: '/css/minify', label: 'CSS Minify', group: 'css' },
     { path: '/base64/encode', label: 'Base64 Encode', group: 'base64' },
     { path: '/base64/decode', label: 'Base64 Decode', group: 'base64' },
+    { path: '/diff', label: 'Diff Checker', group: 'diff', component: 'diff' },
 ];
