@@ -45,6 +45,12 @@
     border: 1px solid #ccc;
     border-radius: 6px;
     resize: vertical;
+    background: #fff;
+    color: #222;
+}
+
+.ioRow textarea::placeholder {
+    color: #9ca3af;
 }
 
 .button {
@@ -80,4 +86,24 @@
     width: 100%;
     text-align: center;
     color: red;
+}
+
+@media (prefers-color-scheme: dark) {
+    .note {
+        color: #9ca3af;
+    }
+
+    .ioRow textarea {
+        background: #2a2a32;
+        color: #f0f0f0;
+        border-color: #3f3f48;
+    }
+
+    .ioRow textarea::placeholder {
+        color: #6b7280;
+    }
+
+    .error {
+        color: #f87171;
+    }
 }
